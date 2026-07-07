@@ -319,6 +319,8 @@ def get_db():
     if "db" not in g:
         g.db = sqlite3.connect(DATABASE)
         g.db.row_factory = sqlite3.Row
+        g.db.execute("CREATE TABLE IF NOT EXISTS registrations (id INTEGER PRIMARY KEY AUTOINCREMENT,teacher TEXT,company_name TEXT,contact_person TEXT,contact_phone TEXT,company_type TEXT,industry TEXT,price TEXT,payment_status TEXT DEFAULT '未付款',invoice_info TEXT,company_intro TEXT,selected_sessions TEXT,job_positions TEXT,recruiters TEXT,created_at TEXT,updated_at TEXT)")
+        g.db.commit()
     return g.db
 
 @app.teardown_appcontext
