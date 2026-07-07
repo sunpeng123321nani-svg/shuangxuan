@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>双选会企业报名系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:#f0f2f5;color:#333}
+.header{background:linear-gradient(135deg,#1a73e8,#0d47a1);color:#fff;padding:20px 30px}
+.header h1{font-size:22px}
+.header p{font-size:14px;opacity:.85;margin-top:5px}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.card{background:#fff;border-radius:8px;padding:20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.card h2{font-size:18px;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #1a73e8}
+.form-row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.form-group{flex:1;min-width:180px}
+.form-group label{display:block;font-size:13px;font-weight:bold;margin-bottom:4px;color:#555}
+.form-group label .required{color:#e53935}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:8px 10px;border:1px solid #d0d0d0;border-radius:4px;font-size:14px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#1a73e8;box-shadow:0 0 0 2px rgba(26,115,232,.15)}
+.form-group textarea{resize:vertical;min-height:60px}
+.btn{padding:8px 20px;border:none;border-radius:4px;font-size:14px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:5px}
+.btn-primary{background:#1a73e8;color:#fff}
+.btn-primary:hover{background:#1557b0}
+.btn-success{background:#0f9d58;color:#fff}
+.btn-success:hover{background:#0b8043}
+.btn-danger{background:#e53935;color:#fff}
+.btn-danger:hover{background:#c62828}
+.btn-outline{background:transparent;border:1px solid #1a73e8;color:#1a73e8}
+.btn-outline:hover{background:#1a73e8;color:#fff}
+.btn-sm{padding:4px 10px;font-size:12px}
+.nav-bar{display:flex;align-items:center;gap:10px}
+.nav-bar a{color:#fff;text-decoration:none;font-size:14px;padding:8px 16px;border-radius:4px}
+.nav-bar a:hover{background:rgba(255,255,255,.15)}
+.nav-bar a.active{background:rgba(255,255,255,.2)}
+table{width:100%;border-collapse:collapse}
+table th{background:#f5f5f5;padding:10px 12px;text-align:left;font-size:13px;font-weight:bold;border-bottom:2px solid #ddd;white-space:nowrap}
+table td{padding:10px 12px;border-bottom:1px solid #eee;font-size:13px}
+table tr:hover{background:#fafafa}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold}
+.badge-red{background:#ffebee;color:#c62828}
+.badge-green{background:#e8f5e9;color:#2e7d32}
+.badge-blue{background:#e3f2fd;color:#1565c0}
+.badge-orange{background:#fff3e0;color:#e65100}
+.badge-purple{background:#f3e5f5;color:#7b1fa2}
+.sessions-list{max-height:280px;overflow-y:auto;border:1px solid #e0e0e0;border-radius:6px;padding:10px;background:#fafafa}
+.sessions-list label{display:flex;align-items:center;gap:8px;padding:5px 8px;font-size:13px;cursor:pointer;border-radius:4px}
+.sessions-list label:hover{background:#e8f0fe}
+.sessions-list input[type="checkbox"]{width:16px;height:16px;accent-color:#1a73e8}
+.filter-bar{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap;align-items:center}
+.filter-bar select,.filter-bar input{padding:6px 10px;border:1px solid #d0d0d0;border-radius:4px;font-size:13px}
+.flash{position:fixed;top:20px;right:20px;padding:12px 24px;border-radius:6px;color:#fff;z-index:999;animation:fadeIn .3s;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.flash-success{background:#0f9d58}
+.flash-error{background:#e53935}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.actions{display:flex;gap:6px}
+.empty-state{text-align:center;padding:40px;color:#999}
+.stat-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px;margin-bottom:20px}
+.stat-card{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:12px;padding:20px;text-align:center}
+.stat-card .num{font-size:28px;font-weight:bold}
+.stat-card .label{font-size:13px;opacity:.85;margin-top:5px}
+.stat-card.green{background:linear-gradient(135deg,#11998e,#38ef7d)}
+.stat-card.orange{background:linear-gradient(135deg,#f093fb,#f5576c)}
+.stat-card.blue{background:linear-gradient(135deg,#4facfe,#00f2fe)}
+@media(max-width:768px){.form-row{flex-direction:column}.form-group{min-width:100%}}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="container" style="padding:0">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <div><h1>双选会企业报名系统</h1><p>2026年秋季全国重点高校毕业生巡回招聘面试会</p></div>
+    <div class="nav-bar">
+      <a href="/" class="active">表单录入</a>
+      <a href="/summary">场次汇总</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="container">
+
+<!-- 表单卡片 -->
+<div class="card">
+  <h2>📝 企业报名信息登记</h2>
+  <form id="regForm" onsubmit="return false">
+    <div class="form-row">
+      <div class="form-group">
+        <label><span class="required">*</span>市场维护人员</label>
+        <select id="teacher" required>
+          <option value="">请选择</option>
+          {% for t in teachers %}<option value="{{ t }}">{{ t }}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label><span class="required">*</span>单位全称</label>
+        <input id="company_name" placeholder="请输入企业全称" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>联系人</label>
+        <input id="contact_person" placeholder="请输入联系人姓名">
+      </div>
+      <div class="form-group">
+        <label>报名价格（元）</label>
+        <select id="payment_status">
+          <option value="未付款">未付款</option>
+          <option value="已付款">已付款</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>是否付款</label>
+        <input id="price" placeholder="如：2980" type="number" min="0">
+      </div>
+      <div class="form-group">
+        <label>联系电话</label>
+        <input id="contact_phone" placeholder="手机号/座机">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>单位性质</label>
+        <input id="company_type" placeholder="如：国企/事业单位/上市公司等">
+      </div>
+      <div class="form-group">
+        <label>所属行业</label>
+        <input id="industry" placeholder="如：IT/互联网/教育等">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>发票信息</label>
+        <input id="invoice_info" placeholder="发票抬头及税号">
+      </div>
+      <div class="form-group">
+        <label>单位简介</label>
+        <textarea id="company_intro" placeholder="200字以内简介"></textarea>
+      </div>
+    </div>
+
+    <div style="margin:15px 0">
+      <label style="font-weight:bold;font-size:13px;">选择报名场次</label>
+      <div style="margin-top:5px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <input id="sessionSearch" placeholder="🔍 搜索场次（城市/学校）" style="padding:6px 10px;border:1px solid #d0d0d0;border-radius:4px;width:300px;margin-bottom:8px;" oninput="filterSessions()">
+        <button type="button" class="btn btn-sm btn-outline" onclick="selectAll()">全选</button>
+        <button type="button" class="btn btn-sm btn-outline" onclick="deselectAll()">取消全选</button>
+      </div>
+      <div class="sessions-list" id="sessionsList">
+        {% for s in sessions %}
+        <label data-name="{{ s.name }} {{ s.city }} {{ s.university }}">
+          <input type="checkbox" value="{{ s.id }}">
+          <strong>{{ s.id }}</strong>. {{ s.city }} - {{ s.university[:18] }}
+          <span style="color:#888;font-size:11px;margin-left:auto">{{ s.date[:15] }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- 招聘岗位 -->
+    <div style="margin:15px 0">
+      <label style="font-weight:bold;font-size:13px;">招聘岗位信息</label>
+      <div id="posContainer">
+        <div class="pos-item" style="background:#f9f9f9;padding:10px;border-radius:6px;margin-bottom:8px;border-left:3px solid #1a73e8">
+          <div class="form-row">
+            <div class="form-group"><label>岗位名称</label><input class="pos-name" placeholder="如：Java开发工程师"></div>
+            <div class="form-group"><label>招聘人数</label><input class="pos-count" placeholder="如：10人"></div>
+            <div class="form-group"><label>学历要求</label><input class="pos-edu" placeholder="如：本科及以上"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>招聘专业</label><input class="pos-major" placeholder="如：计算机相关专业"></div>
+            <div class="form-group"><label>工作地点</label><input class="pos-location" placeholder="如：成都市"></div>
+            <div class="form-group"><label>薪资范围</label><input class="pos-salary" placeholder="如：8K-15K"></div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-primary" onclick="addPosRow()">+ 添加岗位</button>
+    </div>
+
+    <!-- 招聘联系人 -->
+    <div style="margin:15px 0">
+      <label style="font-weight:bold;font-size:13px;">招聘联系人</label>
+      <div id="recruiterContainer">
+        <div class="recruiter-item" style="background:#f9f9f9;padding:10px;border-radius:6px;margin-bottom:8px;border-left:3px solid #0f9d58">
+          <div class="form-row">
+            <div class="form-group"><label>姓名</label><input class="rec-name" placeholder="联系人姓名"></div>
+            <div class="form-group"><label>手机</label><input class="rec-phone" placeholder="手机号码"></div>
+            <div class="form-group"><label>邮箱投递</label><input class="rec-email" placeholder="邮箱地址"></div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="btn btn-sm btn-primary" onclick="addRecruiterRow()">+ 添加联系人</button>
+    </div>
+
+    <div style="margin-top:20px;display:flex;gap:10px">
+      <button type="button" class="btn btn-success" onclick="submitForm()">📤 提交报名信息</button>
+      <button type="button" class="btn btn-outline" onclick="resetForm()">🔄 重置表单</button>
+    </div>
+  </form>
+</div>
+
+<!-- 统计卡片 -->
+<div class="stat-cards" id="statsCards"></div>
+
+<!-- 已报名列表 -->
+<div class="card">
+  <h2 style="display:flex;justify-content:space-between;align-items:center">
+    <span>📋 已报名企业列表</span>
+    <a href="/api/download" class="btn btn-sm btn-primary" style="text-decoration:none">⬇ 下载原始数据</a>
+  </h2>
+  <div class="filter-bar">
+    <select id="filterTeacher" onchange="loadRegistrations()"><option value="">全部老师</option>{% for t in teachers %}<option value="{{ t }}">{{ t }}</option>{% endfor %}</select>
+    <input id="filterCompany" placeholder="搜索企业名称" oninput="loadRegistrations()">
+    <span style="font-size:13px;color:#888" id="dataCount">共 0 条记录</span>
+  </div>
+  <div style="overflow-x:auto">
+    <table>
+      <thead>
+        <tr><th>维护人员</th><th>企业名称</th><th>联系人</th><th>电话</th><th>报名金额</th>
+        <th>是否付款</th><th>单位性质</th><th>报名场次</th><th>时间</th><th>操作</th></tr>
+      </thead>
+      <tbody id="regTableBody"></tbody>
+    </table>
+  </div>
+  <div class="empty-state" id="emptyState"><p>暂无报名数据</p></div>
+</div>
+
+<!-- 老师汇总 -->
+<div class="card">
+  <h2>📊 市场维护老师数据汇总</h2>
+  <div id="teacherSummary" style="overflow-x:auto">
+    <table><thead><tr><th>维护老师</th><th>报名的企业数量</th><th>报名总金额（元）</th><th>参与场次数</th></tr></thead>
+    <tbody id="summaryBody"></tbody></table>
+  </div>
+</div>
+
+</div>
+
+<script>
+let allRegs = [];
+
+function filterSessions() {
+  const q = document.getElementById('sessionSearch').value;
+  document.querySelectorAll('#sessionsList label').forEach(l => {
+    l.style.display = q ? (l.dataset.name.includes(q) ? '' : 'none') : '';
+  });
+}
+function selectAll(){document.querySelectorAll('#sessionsList input[type="checkbox"]').forEach(c=>c.checked=true)}
+function deselectAll(){document.querySelectorAll('#sessionsList input[type="checkbox"]').forEach(c=>c.checked=false)}
+function addPosRow(){const c=document.getElementById('posContainer');const t=c.querySelector('.pos-item').cloneNode(true);t.querySelectorAll('input').forEach(i=>i.value='');c.appendChild(t)}
+function addRecruiterRow(){const c=document.getElementById('recruiterContainer');const t=c.querySelector('.recruiter-item').cloneNode(true);t.querySelectorAll('input').forEach(i=>i.value='');c.appendChild(t)}
+function flash(msg,t){const el=document.createElement('div');el.className='flash flash-'+t;el.textContent=msg;document.body.appendChild(el);setTimeout(()=>el.remove(),3000)}
+
+function getSelectedSessions(){return Array.from(document.querySelectorAll('#sessionsList input[type="checkbox"]:checked')).map(cb=>parseInt(cb.value))}
+function getPositions(){return Array.from(document.querySelectorAll('#posContainer .pos-item')).map(i=>({name:i.querySelector('.pos-name')?.value||'',count:i.querySelector('.pos-count')?.value||'',education:i.querySelector('.pos-edu')?.value||'',major:i.querySelector('.pos-major')?.value||'',location:i.querySelector('.pos-location')?.value||'',salary:i.querySelector('.pos-salary')?.value||''})).filter(p=>p.name)}
+function getRecruiters(){return Array.from(document.querySelectorAll('#recruiterContainer .recruiter-item')).map(i=>({name:i.querySelector('.rec-name')?.value||'',phone:i.querySelector('.rec-phone')?.value||'',email:i.querySelector('.rec-email')?.value||''})).filter(r=>r.name)}
+
+async function submitForm(){
+  const teacher=document.getElementById('teacher').value;
+  const company_name=document.getElementById('company_name').value.trim();
+  if(!teacher){flash('请选择市场维护人员','error');return}
+  if(!company_name){flash('请输入单位全称','error');return}
+  const data={teacher,company_name,contact_person:document.getElementById('contact_person').value,price:document.getElementById('price').value,contact_phone:document.getElementById('contact_phone').value,company_type:document.getElementById('company_type').value,industry:document.getElementById('industry').value,invoice_info:document.getElementById('invoice_info').value,company_intro:document.getElementById('company_intro').value,selected_sessions:getSelectedSessions(),job_positions:getPositions(),recruiters:getRecruiters()};
+  try{
+    const resp=await fetch('/api/registrations',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+    if(!resp.ok){const err=await resp.json();flash(err.error||'提交失败','error');return}
+    flash('提交成功！','success');resetForm();loadRegistrations();loadStats();
+  }catch(e){flash('提交失败：'+e.message,'error')}
+}
+
+function resetForm(){
+  document.getElementById('regForm').reset();
+  document.querySelectorAll('#posContainer .pos-item').forEach((e,i)=>{if(i>0)e.remove()});
+  document.querySelectorAll('#recruiterContainer .recruiter-item').forEach((e,i)=>{if(i>0)e.remove()});
+  document.querySelectorAll('#posContainer .pos-item input').forEach(i=>i.value='');
+  document.querySelectorAll('#recruiterContainer .recruiter-item input').forEach(i=>i.value='');
+  document.querySelectorAll('#sessionsList input[type="checkbox"]').forEach(cb=>cb.checked=false)
+}
+
+function sessDisplay(sids){
+  if(!sids||!sids.length)return'-';
+  const names=sids.map(id=>{const s=window.SMAP[id];return s?s.city+'-'+s.university.slice(0,8):id});
+  return names.slice(0,2).join('; ')+(names.length>2?'...':'')
+}
+
+async function loadRegistrations(){
+  try{
+    const resp=await fetch('/api/registrations');allRegs=await resp.json();renderTable();
+  }catch(e){console.error(e)}
+}
+function renderTable(){
+  const ft=document.getElementById('filterTeacher').value;
+  const fc=document.getElementById('filterCompany').value.toLowerCase();
+  let filtered=allRegs;
+  if(ft)filtered=filtered.filter(r=>r.teacher===ft);
+  if(fc)filtered=filtered.filter(r=>r.company_name.toLowerCase().includes(fc));
+  document.getElementById('dataCount').textContent='共 '+filtered.length+' 条记录';
+  const tbody=document.getElementById('regTableBody');const empty=document.getElementById('emptyState');
+  tbody.innerHTML='';
+  if(!filtered.length){empty.style.display='block';return}
+  empty.style.display='none';
+  filtered.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td><span class="badge badge-blue">'+r.teacher+'</span></td>'+
+      '<td><strong>'+r.company_name+'</strong></td>'+
+      '<td>'+(r.contact_person||'-')+'</td>'+
+      '<td>'+(r.contact_phone||'-')+'</td>'+
+      '<td><strong>'+(r.price||'0')+'</strong></td>'+
+      '<td>'+(r.company_type||'-')+'</td>'+
+      '<td>'+sessDisplay(r.selected_sessions)+'</td>'+
+      '<td style="font-size:11px;color:#888">'+r.created_at.slice(5,16)+'</td>'+
+      '<td><div class="actions"><button class="btn btn-sm btn-danger" onclick="deleteReg('+r.id+')">删除</button></div></td>';
+    tbody.appendChild(tr)
+  })
+}
+
+async function deleteReg(id){
+  if(!confirm('确认删除该记录？'))return;
+  try{await fetch('/api/registrations/'+id,{method:'DELETE'});flash('删除成功','success');loadRegistrations();loadStats()}
+  catch(e){flash('删除失败','error')}
+}
+
+async function loadStats(){
+  try{
+    const resp=await fetch('/api/stats');const stats=await resp.json();
+    let html='',totalCount=0,totalPrice=0;
+    stats.forEach(s=>{
+      totalCount+=s.cnt;totalPrice+=parseFloat(s.total_price||0);
+      html+='<tr><td><span class="badge badge-purple">'+s.teacher+'</span></td><td>'+s.cnt+' 家</td><td>¥'+(parseFloat(s.total_price||0).toFixed(2))+'</td><td>-</td></tr>'
+    });
+    document.getElementById('summaryBody').innerHTML=html;
+    document.getElementById('statsCards').innerHTML=
+      '<div class="stat-card blue"><div class="num">'+totalCount+'</div><div class="label">报名企业总数</div></div>'+
+      '<div class="stat-card green"><div class="num">'+allRegs.filter(r=>r.selected_sessions&&r.selected_sessions.length).reduce((c,r)=>c+r.selected_sessions.length,0)+'</div><div class="label">总报名场次数</div></div>'+
+      '<div class="stat-card orange"><div class="num">¥'+(totalPrice.toFixed(0))+'</div><div class="label">报名总金额</div></div>';
+  }catch(e){console.error(e)}
+}
+
+// Build session map
+window.SMAP={};
+{% for s in sessions %}SMAP[{{ s.id }}]={id:{{ s.id }},city:'{{ s.city }}',university:'{{ s.university }}'};{% endfor %}
+
+setInterval(loadRegistrations,15000);loadRegistrations();loadStats();
+</script>
+</body>
+</html>
