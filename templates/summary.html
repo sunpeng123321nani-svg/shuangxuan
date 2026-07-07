@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>场次汇总 - 双选会报名系统</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Microsoft YaHei","PingFang SC",sans-serif;background:#f0f2f5;color:#333}
+.header{background:linear-gradient(135deg,#1a73e8,#0d47a1);color:#fff;padding:20px 30px}
+.header h1{font-size:22px}
+.container{max-width:1200px;margin:0 auto;padding:20px}
+.nav-bar{display:flex;align-items:center;gap:10px}
+.nav-bar a{color:#fff;text-decoration:none;font-size:14px;padding:8px 16px;border-radius:4px}
+.nav-bar a:hover{background:rgba(255,255,255,.15)}
+.nav-bar a.active{background:rgba(255,255,255,.2)}
+.card{background:#fff;border-radius:8px;padding:20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.card h2{font-size:18px;margin-bottom:15px;padding-bottom:10px;border-bottom:2px solid #1a73e8}
+.filter-bar{display:flex;gap:10px;margin-bottom:15px;flex-wrap:wrap;align-items:center}
+.filter-bar select,.filter-bar input{padding:6px 10px;border:1px solid #d0d0d0;border-radius:4px;font-size:13px}
+.filter-bar button{padding:6px 16px;background:#1a73e8;color:#fff;border:none;border-radius:4px;cursor:pointer}
+.filter-bar button:hover{background:#1557b0}
+.group-title{font-size:15px;font-weight:bold;margin:18px 0 8px;padding:8px 12px;background:#e8f0fe;border-radius:6px;color:#1a73e8}
+.session-card{border:1px solid #e0e0e0;border-radius:8px;margin-bottom:8px;overflow:hidden;transition:box-shadow .2s}
+.session-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.session-header{display:flex;align-items:center;padding:14px 16px;cursor:pointer;background:#fff}
+.session-header:hover{background:#fafafa}
+.session-header .arrow{transition:transform .3s;margin-right:10px;font-size:12px;color:#888}
+.session-header.open .arrow{transform:rotate(90deg)}
+.session-body{padding:0 16px 14px;display:none}
+.session-body.open{display:block}
+.session-body table{width:100%;border-collapse:collapse}
+.session-body th{background:#f5f5f5;padding:8px 10px;text-align:left;font-size:12px;font-weight:bold;border-bottom:1px solid #ddd}
+.session-body td{padding:8px 10px;border-bottom:1px solid #eee;font-size:13px}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold}
+.badge-blue{background:#e3f2fd;color:#1565c0}
+.badge-green{background:#e8f5e9;color:#2e7d32}
+.badge-orange{background:#fff3e0;color:#e65100}
+.badge-purple{background:#f3e5f5;color:#7b1fa2}
+.count-badge{display:inline-block;background:#ff5722;color:#fff;border-radius:10px;padding:0 8px;font-size:11px;line-height:20px;margin-left:8px;min-width:20px;text-align:center}
+.info-text{font-size:12px;color:#888;margin-left:12px}
+.summary-stats{display:flex;gap:20px;margin-bottom:15px;flex-wrap:wrap}
+.summary-stat{background:#f5f5f5;border-radius:8px;padding:12px 20px;text-align:center;flex:1;min-width:150px}
+.summary-stat .num{font-size:24px;font-weight:bold;color:#1a73e8}
+.summary-stat .label{font-size:12px;color:#666;margin-top:4px}
+.empty-state{text-align:center;padding:40px;color:#999;font-size:14px}
+@media(max-width:768px){.filter-bar{flex-direction:column}.filter-bar select,.filter-bar input{width:100%}}
+</style>
+</head>
+<body>
+<div class="header">
+<div class="container" style="padding:0">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+    <div><h1>场次汇总 · 报名企业总名单</h1></div>
+    <div class="nav-bar">
+      <a href="/">表单录入</a>
+      <a href="/summary" class="active">场次汇总</a>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="container">
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:15px">
+    <h2 style="border:none;margin:0;padding:0">按场次查看报名企业</h2>
+    <a href="/api/download" class="btn" style="padding:8px 20px;background:#1a73e8;color:#fff;border:none;border-radius:4px;font-size:14px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:5px">⬇ 下载原始数据</a>
+  </div>
+
+  <div class="filter-bar">
+    <select id="cityFilter" onchange="applyFilters()">
+      <option value="">全部城市</option>
+      <option value="成都">成都</option>
+      <option value="西安">西安</option>
+      <option value="哈尔滨">哈尔滨</option>
+      <option value="长春">长春</option>
+      <option value="长沙">长沙</option>
+      <option value="南京">南京</option>
+      <option value="武汉">武汉</option>
+      <option value="其他">其他</option>
+    </select>
+    <select id="typeFilter" onchange="applyFilters()">
+      <option value="">全部类型</option>
+      <option value="全国重点高校巡回招聘会">全国重点高校</option>
+      <option value="四川省重点高校巡回招聘会">四川省重点高校</option>
+      <option value="华中地区重点高校巡回招聘会">华中地区</option>
+      <option value="成都地区重点高校巡回招聘会">成都地区</option>
+    </select>
+    <input id="searchInput" placeholder="搜索学校名称" oninput="applyFilters()">
+    <button onclick="loadSummary()">🔄 刷新数据</button>
+  </div>
+
+  <div id="summaryStats" class="summary-stats"></div>
+  <div id="summaryContainer"></div>
+</div>
+</div>
+
+<script>
+let summaryData = [];
+
+async function loadSummary() {
+  try {
+    const resp = await fetch('/api/summary');
+    summaryData = await resp.json();
+    applyFilters();
+  } catch(e) { console.error(e); }
+}
+
+function toggleSession(id) {
+  const header = document.getElementById('sh-'+id);
+  const body = document.getElementById('sb-'+id);
+  if (header) header.classList.toggle('open');
+  if (body) body.classList.toggle('open');
+}
+
+function applyFilters() {
+  const city = document.getElementById('cityFilter').value;
+  const type = document.getElementById('typeFilter').value;
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const container = document.getElementById('summaryContainer');
+  container.innerHTML = '';
+
+  let filtered = summaryData;
+  if (city) filtered = filtered.filter(s => s.city === city);
+  if (type) filtered = filtered.filter(s => s.session_name === type);
+  if (q) filtered = filtered.filter(s => s.university.toLowerCase().includes(q));
+
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty-state"><p>暂无符合条件的场次</p></div>';
+    document.getElementById('summaryStats').innerHTML = '';
+    return;
+  }
+
+  // Statistics
+  const totalCos = filtered.reduce((c,s)=>c+s.companies.length,0);
+  const totalSessions = filtered.length;
+  document.getElementById('summaryStats').innerHTML =
+    '<div class="summary-stat"><div class="num">'+totalSessions+'</div><div class="label">符合条件的场次</div></div>'+
+    '<div class="summary-stat"><div class="num">'+totalCos+'</div><div class="label">报名企业总数</div></div>';
+
+  // Group by session type
+  const groups = {};
+  filtered.forEach(s => {
+    if (!groups[s.session_name]) groups[s.session_name] = [];
+    groups[s.session_name].push(s);
+  });
+
+  Object.keys(groups).forEach(groupName => {
+    const sessions = groups[groupName];
+    container.innerHTML += '<div class="group-title">'+groupName+'（共'+sessions.length+'场）</div>';
+    sessions.sort((a,b) => a.session_id - b.session_id);
+    sessions.forEach(s => {
+      const totalCompanies = s.companies.length;
+      const card = document.createElement('div');
+      card.className = 'session-card';
+      card.innerHTML =
+        '<div class="session-header" id="sh-'+s.session_id+'" onclick="toggleSession('+s.session_id+')">'+
+          '<span class="arrow">▶</span>'+
+          '<strong>'+s.university+'</strong>'+
+          '<span class="info-text">'+s.city+' | '+s.date+' | '+s.campus+'</span>'+
+          '<span class="count-badge">'+totalCompanies+'家企业</span>'+
+        '</div>'+
+        '<div class="session-body" id="sb-'+s.session_id+'">'+
+          (totalCompanies
+            ? '<table><thead><tr><th>企业名称</th><th>单位性质</th><th>是否付款</th><th>市场维护人员</th><th>联系人</th><th>电话</th><th>报名金额</th><th>提交时间</th></tr></thead><tbody>'+
+              s.companies.map(c => '<tr><td><strong>'+c.company_name+'</strong></td><td>'+(c.company_type||'-')+'</td><td>' + ((c.payment_status||'未付款')==='已付款' ? '<span class="badge badge-green">已付款</span>' : '<span class="badge badge-orange">未付款</span>') + '</td><td><span class="badge badge-blue">'+c.teacher+'</span></td><td>'+(c.contact_person||'-')+'</td><td>'+(c.contact_phone||'-')+'</td><td>¥'+(c.price||'0')+'</td><td style="font-size:11px;color:#888">'+c.created_at.slice(5,16)+'</td></tr>').join('')+
+              '</tbody></table>'
+            : '<div style="color:#bbb;padding:10px;font-size:13px">暂无企业报名</div>')+
+        '</div>';
+      container.appendChild(card);
+    });
+  });
+}
+
+loadSummary();
+setInterval(loadSummary, 30000);
+</script>
+</body>
+</html>
